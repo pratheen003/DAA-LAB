@@ -1,5 +1,6 @@
 import time
 import random
+import streamlit as st
 
 
 def interpolation_search(arr, target):
@@ -51,9 +52,10 @@ def binary_search(arr, target):
 
 def performance_analysis():
     sizes = [1000, 5000, 10000, 50000, 100000]
-    print(f"{'size':>10} {'IS Time(ms)':>14} {'BS Time(ms)':>14} "
-            f"{'IS Comparisons':>16} {'BS Comparisons':>16}")
-    print('-' * 75)
+    st.write(
+        f"{'Size':>10} {'IS Time(ms)':>14} {'BS Time(ms)':>14} "
+        f"{'IS Comparisons':>16} {'BS Comparisons':>16}"
+    )
 
 
     for size in sizes:
@@ -73,26 +75,59 @@ def performance_analysis():
         for _ in range(100):
             idx_bs, comp_bs = binary_search(arr, target)
         bs_time = (time.perf_counter() - start) / 100 * 1000
-        print(f"{size:>10} {is_time:>14.4f} {bs_time:>14.4f}"
-            f"{comp_is:>16} {comp_bs:>16}")
+        st.write(
+            f"{size:>10} {is_time:>14.4f} {bs_time:>14.4f}"
+            f"{comp_is:>16} {comp_bs:>16}"
+        )
 
 
 # --- Main ---
 
-size = int(input("Enter the size of array: "))
+st.title("Interpolation Search")
+
+size = st.number_input(
+    "Enter the size of array",
+    min_value=1,
+    step=1
+)
 
 arr = []
-print("Enter the array elements in sorted order:")
-for i in range(size):
-    arr.append(int(input(f"Element {i + 1}: ")))
 
-target = int(input("Enter the target element to search: "))
+if size > 0:
+    st.write("Enter the array elements in sorted order:")
 
-idx, comps = interpolation_search(arr, target)
+    for i in range(size):
+        arr.append(
+            st.number_input(
+                f"Element {i + 1}",
+                key=f"arr_{i}"
+            )
+        )
 
-print(f"\nArray: {arr}")
-print(f"Searching for: {target}")
-print(f"Found at index: {idx}, Comparisons: {comps}")
+    target = st.number_input(
+        "Enter the target element to search"
+    )
 
-print()
-performance_analysis()
+    if st.button("Search"):
+
+        idx, comps = interpolation_search(arr, target)
+
+        st.write("### Results")
+        st.write(f"Array: {arr}")
+        st.write(f"Searching for: {target}")
+
+        if idx != -1:
+            st.success(
+                f"Found at index: {idx}"
+            )
+        else:
+            st.error(
+                "Element not found"
+            )
+
+        st.write(
+            f"Comparisons: {comps}"
+        )
+
+        st.write("### Performance Analysis")
+        performance_analysis()
