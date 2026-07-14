@@ -122,7 +122,7 @@ if st.button("Search"):
             "Pattern": p,
             "Naive": c1,
             "KMP": c2,
-            "Rabin-Karp": c3
+            "Rabin-Karp": c3 
         })
 
     st.table(data)
